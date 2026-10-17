@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    enabled_sources: List[str] = Field(default_factory=lambda: ["websearch"])
+    enabled_sources: List[str] = Field(default_factory=lambda: ["mock", "websearch"])
     ebay_api_key: str = ""
     reddit_client_id: str = ""
     reddit_client_secret: str = ""
