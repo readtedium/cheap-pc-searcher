@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-import re
 from typing import List
-from cheap_pc_searcher.sources.base import BaseSource
+from cheap_pc_searcher.sources.base import BaseSource, extract_price
 from cheap_pc_searcher.models import Listing
 
 
@@ -65,7 +64,7 @@ class RedditSource(BaseSource):
                         raw_title=title,
                         raw_url=f"https://reddit.com{listing_data.get('permalink', '')}",
                         raw_description=body,
-                        current_price=self._extract_price(title, body),
+                        current_price=extract_price(title, body),
                         listing_type="fixed"
                     ))
                 return listings
@@ -73,15 +72,3 @@ class RedditSource(BaseSource):
             except Exception as e:
                 print(f"Reddit API Error: {e}")
                 return []
-
-    @staticmethod
-    def _extract_price(*texts: str) -> float:
-        """
-        r/hardwareswap titles look like '[H] GTX 1080 Ti [W] $120 PayPal'.
-        Returns 0.0 when no price can be found (loop sorts these last).
-        """
-        for text in texts:
-            match = re.search(r"\$\s*([0-9][0-9,]*(?:\.\d{1,2})?)", text or "")
-            if match:
-                return float(match.group(1).replace(",", ""))
-        return 0.0

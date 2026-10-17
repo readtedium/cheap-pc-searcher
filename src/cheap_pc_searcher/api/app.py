@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from cheap_pc_searcher.models import Listing, PartCategory, TargetBuild
+from cheap_pc_searcher.config import Settings
 from cheap_pc_searcher.agent.loop import AgentLoop
 from cheap_pc_searcher.sources.registry import SourceRegistry
 from cheap_pc_searcher.normalize import Normalizer
@@ -27,16 +28,9 @@ class SourceStatus(BaseModel):
 
 # --- Dependency Injection ---
 
-# In a production app, these would be managed by a lifespan handler
-# For the starter, we'll simulate a config-driven setup.
-_MOCK_CONFIG = {
-    "enabled_sources": ["mock"],  # Start with mock to ensure the API works immediately
-    "ebay_api_key": "",
-    "reddit_client_id": "",
-    "reddit_client_secret": ""
-}
-
-_registry = SourceRegistry(_MOCK_CONFIG)
+# Config comes from the environment (or .env); see config.py and .env.example
+_settings = Settings()
+_registry = SourceRegistry(_settings.model_dump())
 _normalizer = Normalizer()
 _agent = AgentLoop(registry=_registry, normalizer=_normalizer)
 
@@ -65,13 +59,11 @@ async def health_check():
 
 @app.get("/sources", response_model=List[SourceStatus])
 async def get_sources():
-    """Returns the list of currently enabled sources."""
+    """Returns every known source with its enabled status."""
     enabled = _registry.get_enabled_sources()
-    # Return all known sources with their status
-    all_sources = ["mock", "ebay", "reddit"]
     return [
-        SourceStatus(name=name, enabled=(name in enabled)) 
-        for name in all_sources
+        SourceStatus(name=name, enabled=(name in enabled))
+        for name in _registry.known_sources()
     ]
 
 
