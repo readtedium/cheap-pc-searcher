@@ -73,7 +73,7 @@ they add ceremony before the loop is proven. Easy to add later.
 Install the API dependencies and start FastAPI from the repository root:
 
 ```sh
-python -m pip install fastapi pydantic uvicorn
+python -m pip install fastapi pydantic pydantic-settings uvicorn
 python -m uvicorn cheap_pc_searcher.api.app:app --app-dir src --reload
 ```
 

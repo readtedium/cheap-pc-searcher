@@ -81,28 +81,16 @@ class MockSource(BaseSource):
         # Simulate network latency
         await asyncio.sleep(0.1)
 
-        query_tokens = set(re.findall(r"[a-z0-9]+", query.lower()))
+        query_lower = query.lower()
         results = []
 
-        # Very primitive search logic for mock
+        category_terms = {
+            "cpu": ("cpu", "processor", "ryzen", "intel", "xeon", "threadripper"),
+            "ram": ("ram", "memory", "ddr"),
+            "bundle": ("pc", "desktop", "prebuilt", "bundle", "computer"),
+        }
         for category, listings in self._data.items():
-            if category in query_lower or any(
-                c in query_lower
-                for c in [cat.value for cat in PartCategory if cat.value in query_lower]
-            ):
-                # If query is "cpu", match "cpu" category
-                # This is a bit hacky for a mock but works for the loop
-                pass
-
-            # Actually, let's just check if the category name is in the query
-            # or if the query is generic enough to match everything
-            if any(cat_val in query_lower for cat_val in ["cpu", "ram", "gpu", "pc"]):
-                # Check if the category itself matches the query keyword
-                if category == "cpu" and "cpu" in query_lower:
-                    results.extend(listings)
-                elif category == "ram" and "ram" in query_lower:
-                    results.extend(listings)
-                elif "pc" in query_lower:
-                    results.extend(listings)
+            if any(term in query_lower for term in category_terms[category]):
+                results.extend(listings)
 
         return results[:limit]

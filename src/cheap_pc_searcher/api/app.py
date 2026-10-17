@@ -4,52 +4,48 @@ from pathlib import Path
 from typing import List
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import List, Optional
 
-from .models import Listing, PartCategory
-from .agent.loop import AgentLoop
-from .sources.registry import SourceRegistry
-from .normalize import Normalizer
+from ..agent.loop import AgentLoop
+from ..config import Settings
+from ..models import Listing
+from ..normalize import Normalizer
+from ..sources.registry import SourceRegistry
 
 app = FastAPI(title="Cheap PC Searcher API")
+web_directory = Path(__file__).resolve().parents[3] / "web"
+app.mount("/web_inspo", StaticFiles(directory=web_directory / "web_inspo"), name="web-inspo")
 
-# In a real app, these would be initialized via dependency injection or a lifespan handler
-# For the starter, we initialize them here.
-registry = SourceRegistry()
+settings = Settings()
+registry = SourceRegistry(settings.model_dump())
 normalizer = Normalizer()
-# We'll use a mock loop for now or a real one if keys are provided
 agent_loop = AgentLoop(registry=registry, normalizer=normalizer)
 
 
 class SearchRequest(BaseModel):
-    target_build_json: str  # We'll accept a JSON string representing the TargetBuild
+    target_build_json: str
 
 
 @app.get("/")
 async def root():
-    return {"message": "Cheap PC Searcher API is running. Use /search to find deals."}
+    return FileResponse(web_directory / "index.html")
 
 
 @app.get("/sources")
 async def list_sources():
     """Returns a list of currently enabled search sources."""
-    return {"enabled_sources": list(registry.get_enabled_sources())}
+    return {"enabled_sources": registry.get_enabled_sources()}
 
 
 @app.post("/search", response_model=List[Listing])
 async def search_parts(request: SearchRequest):
     """
-    Perform a deep search for compatible parts.
-    The Host/Frontend sends a TargetBuild JSON.
-    The Agent finds, normalizes, and validates parts.
+    The agent plans, searches, normalizes, and validates listings for a target build.
     """
     try:
-        # The AgentLoop.run expects a JSON string representing the TargetBuild
-        # We convert our Pydantic model back to JSON to keep the Agent's interface stable.
-        target_json = request.target_build.model_dump_json()
-
-        results = await _agent.run(target_json)
+        results = await agent_loop.run(request.target_build_json)
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

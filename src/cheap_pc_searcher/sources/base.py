@@ -3,7 +3,17 @@ from __future__ import annotations
 import re
 from abc import ABC, abstractmethod
 from typing import List
-from .models import Listing
+
+from ..models import Listing
+
+
+def extract_price(*texts: str) -> float:
+    """Extract a dollar amount from marketplace title or description text."""
+    for text in texts:
+        match = re.search(r"\$\s*([\d,]+(?:\.\d{1,2})?)", text or "")
+        if match:
+            return float(match.group(1).replace(",", ""))
+    return 0.0
 
 
 class BaseSource(ABC):
