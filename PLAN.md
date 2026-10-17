@@ -68,6 +68,18 @@ cheap-pc-searcher/
 Deliberately avoiding heavier frameworks (Scrapy, LangChain) in the starter —
 they add ceremony before the loop is proven. Easy to add later.
 
+## Run locally
+
+Install the API dependencies and start FastAPI from the repository root:
+
+```sh
+python -m pip install fastapi pydantic uvicorn
+python -m uvicorn cheap_pc_searcher.api.app:app --app-dir src --reload
+```
+
+Open `http://127.0.0.1:8000/` to use the frontend. The same server provides
+`GET /health`, `GET /sources`, and `POST /search`.
+
 ---
 
 ## The five subsystems

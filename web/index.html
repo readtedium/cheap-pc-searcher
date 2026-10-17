@@ -12,18 +12,22 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
         
         :root {
-            --bg-base: #070a13;
-            --bg-surface: #0f172a;
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --primary-blue: #3b82f6;
-            --primary-indigo: #6366f1;
-            --accent-emerald: #10b981;
+            --palette-deep: #34484b;
+            --palette-teal: #53696b;
+            --palette-sky: #87999a;
+            --palette-ice: #b7c2bf;
+            --palette-mist: #d5dbd4;
+            --bg-base: #151f20;
+            --bg-surface: #202c2d;
+            --border-subtle: rgba(183, 194, 191, 0.12);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-base);
-            color: #f1f5f9;
+            background:
+                radial-gradient(ellipse at 50% -15%, rgba(83, 105, 107, 0.12), transparent 48%),
+                var(--bg-base);
+            color: var(--palette-mist);
             -webkit-font-smoothing: antialiased;
         }
 
@@ -32,47 +36,42 @@
         }
 
         .glass-panel {
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(52, 72, 75, 0.55) 0%, rgba(28, 40, 41, 0.94) 100%);
             border: 1px solid var(--border-subtle);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
 
         .glass-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.75) 100%);
+            background: linear-gradient(145deg, rgba(52, 72, 75, 0.36) 0%, rgba(32, 44, 45, 0.78) 100%);
             border: 1px solid var(--border-subtle);
             backdrop-filter: blur(12px);
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.35);
-            box-shadow: 0 12px 32px -8px rgba(79, 70, 229, 0.18);
+            border-color: rgba(183, 194, 191, 0.26);
+            box-shadow: 0 14px 32px -20px rgba(0, 0, 0, 0.8);
             transform: translateY(-2px);
         }
 
         .persona-card {
             cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(183, 194, 191, 0.12);
+            background: rgba(32, 44, 45, 0.55);
             transition: all 0.2s ease-in-out;
         }
 
         .persona-card:hover {
-            background: rgba(30, 41, 59, 0.8);
-            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(52, 72, 75, 0.56);
+            border-color: rgba(183, 194, 191, 0.25);
         }
 
-        .persona-card.active-non-tech {
-            border-color: #10b981;
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);
-            box-shadow: 0 0 20px -4px rgba(16, 185, 129, 0.3);
-        }
-
+        .persona-card.active-non-tech,
         .persona-card.active-tech-savvy {
-            border-color: #6366f1;
-            background: linear-gradient(135deg, rgba(49, 46, 129, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%);
-            box-shadow: 0 0 20px -4px rgba(99, 102, 241, 0.3);
+            border-color: rgba(170, 183, 178, 0.45);
+            background: linear-gradient(135deg, rgba(83, 105, 107, 0.25) 0%, rgba(28, 40, 41, 0.9) 100%);
+            box-shadow: inset 0 1px rgba(213, 219, 212, 0.04);
         }
 
         .checklist-checkbox {
@@ -80,19 +79,19 @@
             -webkit-appearance: none;
             width: 1.15rem;
             height: 1.15rem;
-            border: 2px solid rgba(148, 163, 184, 0.4);
+            border: 2px solid rgba(183, 194, 191, 0.3);
             border-radius: 0.35rem;
             outline: none;
             cursor: pointer;
             position: relative;
             transition: all 0.15s ease;
-            background-color: rgba(15, 23, 42, 0.6);
+            background-color: rgba(21, 31, 32, 0.72);
             flex-shrink: 0;
         }
 
         .checklist-checkbox:checked {
-            background-color: #10b981;
-            border-color: #10b981;
+            background-color: var(--palette-teal);
+            border-color: var(--palette-ice);
         }
 
         .checklist-checkbox:checked::after {
@@ -108,7 +107,7 @@
 
         .checklist-label.completed {
             text-decoration: line-through;
-            color: #64748b;
+            color: #84918d;
         }
 
         .headroom-meter-fill {
@@ -121,18 +120,295 @@
         }
 
         .quick-chip:hover {
-            background-color: #334155;
-            color: #ffffff;
-            border-color: #64748b;
+            background-color: var(--palette-deep);
+            color: var(--palette-mist);
+            border-color: var(--palette-sky);
         }
 
         .accent-gradient {
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            background: linear-gradient(110deg, var(--palette-sky) 0%, var(--palette-mist) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        .inspo-banner {
+            background-image: linear-gradient(105deg, #34484b 0%, #273638 52%, #151f20 100%) !important;
+        }
+
+        .inspo-mark {
+            background-image: linear-gradient(145deg, #53696b 0%, #87999a 100%) !important;
+        }
+
+        /* Keep the existing utility classes on a single washed-out slate/teal scale. */
+        body [class*="bg-slate-950"] { background-color: #151f20 !important; }
+        body [class*="bg-slate-900"] { background-color: #202c2d !important; }
+        body [class*="bg-slate-800"] { background-color: #34484b !important; }
+        body [class*="bg-slate-700"] { background-color: #46595a !important; }
+        body [class*="text-slate-300"] { color: #b7c2bf !important; }
+        body [class*="text-slate-400"] { color: #9ba9a6 !important; }
+        body [class*="text-slate-500"] { color: #788582 !important; }
+        body [class*="border-slate-800"] { border-color: rgba(183, 194, 191, 0.13) !important; }
+        body [class*="border-slate-700"] { border-color: rgba(183, 194, 191, 0.2) !important; }
+        body [class*="bg-blue-950"], body [class*="bg-indigo-950"],
+        body [class*="bg-sky-950"], body [class*="bg-purple-950"],
+        body [class*="bg-emerald-950"], body [class*="bg-green-950"],
+        body [class*="bg-amber-950"], body [class*="bg-red-950"] { background-color: #34484b !important; }
+        body [class*="bg-blue-900"], body [class*="bg-indigo-900"],
+        body [class*="bg-sky-900"], body [class*="bg-purple-900"],
+        body [class*="bg-emerald-900"], body [class*="bg-green-900"],
+        body [class*="bg-amber-900"], body [class*="bg-red-900"] { background-color: #46595a !important; }
+        body [class*="bg-blue-600"], body [class*="bg-indigo-600"],
+        body [class*="bg-sky-600"], body [class*="bg-emerald-600"],
+        body [class*="bg-green-600"], body [class*="bg-emerald-400"],
+        body [class*="bg-green-400"], body [class*="bg-amber-400"],
+        body [class*="bg-red-600"] { background-color: #87999a !important; }
+        body [class*="text-blue-300"], body [class*="text-blue-400"],
+        body [class*="text-indigo-200"], body [class*="text-indigo-300"],
+        body [class*="text-indigo-400"], body [class*="text-sky-300"],
+        body [class*="text-sky-400"], body [class*="text-cyan-400"],
+        body [class*="text-purple-200"], body [class*="text-purple-300"],
+        body [class*="text-purple-400"], body [class*="text-emerald-200"],
+        body [class*="text-emerald-300"], body [class*="text-emerald-400"],
+        body [class*="text-green-200"], body [class*="text-green-300"],
+        body [class*="text-green-400"], body [class*="text-amber-200"],
+        body [class*="text-amber-300"], body [class*="text-amber-400"],
+        body [class*="text-red-300"], body [class*="text-red-400"] { color: #aebbb5 !important; }
+        body [class*="border-blue-"], body [class*="border-indigo-"],
+        body [class*="border-sky-"], body [class*="border-purple-"],
+        body [class*="border-emerald-"], body [class*="border-green-"],
+        body [class*="border-amber-"], body [class*="border-red-"] {
+            border-color: rgba(183, 194, 191, 0.22) !important;
+        }
+        body [class*="from-blue-950"] {
+            --tw-gradient-from: #34484b var(--tw-gradient-from-position) !important;
+            --tw-gradient-to: rgb(52 72 75 / 0) var(--tw-gradient-to-position) !important;
+        }
+        body [class*="via-indigo-950"] { --tw-gradient-via: #273638 var(--tw-gradient-via-position) !important; }
+        body [class*="to-slate-950"] { --tw-gradient-to: #151f20 var(--tw-gradient-to-position) !important; }
+        body [class*="from-blue-600"] {
+            --tw-gradient-from: #53696b var(--tw-gradient-from-position) !important;
+            --tw-gradient-to: rgb(83 105 107 / 0) var(--tw-gradient-to-position) !important;
+        }
+        body [class*="via-indigo-600"] { --tw-gradient-via: #53696b var(--tw-gradient-via-position) !important; }
+        body [class*="to-purple-600"] { --tw-gradient-to: #87999a var(--tw-gradient-to-position) !important; }
+        body [class*="to-purple-500"] { --tw-gradient-to: #647779 var(--tw-gradient-to-position) !important; }
+        body [class*="from-emerald-500"] { --tw-gradient-from: #87999a var(--tw-gradient-from-position) !important; }
+        body [class*="to-sky-400"] { --tw-gradient-to: #b7c2bf var(--tw-gradient-to-position) !important; }
+        body [class*="shadow-indigo-"] { --tw-shadow-color: rgba(0, 0, 0, 0.24) !important; }
+        header { box-shadow: 0 12px 30px -24px rgba(0, 0, 0, 0.7); }
+        input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+            color-scheme: dark;
+            background-color: rgba(21, 31, 32, 0.82);
+            border-color: rgba(183, 194, 191, 0.2);
+        }
+        input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible {
+            outline: 2px solid var(--palette-sky);
+            outline-offset: 3px;
+        }
+
+        .hero-section {
+            padding: clamp(0.75rem, 2vw, 1.5rem) 0 0.5rem;
+        }
+
+        .hero-layout {
+            position: relative;
+            isolation: isolate;
+            display: block;
+            width: 100%;
+            height: clamp(390px, 42vw, 540px);
+            margin: 0 auto;
+            overflow: hidden;
+            border: 1px solid rgba(183, 194, 191, 0.18);
+            border-radius: 1.8rem;
+            background: #202c2d;
+            box-shadow: 0 24px 60px -38px rgba(0, 0, 0, 0.9);
+        }
+
+        .hero-copy {
+            position: absolute;
+            z-index: 2;
+            top: 50%;
+            left: clamp(1.5rem, 6vw, 5.5rem);
+            width: min(52%, 610px);
+            transform: translateY(-50%);
+        }
+
+        .hero-title {
+            max-width: 11ch;
+            margin-top: 1.25rem;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            line-height: 0.96;
+            letter-spacing: -0.07em;
+        }
+
+        .hero-visual {
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            overflow: hidden;
+            background: #202c2d;
+        }
+
+        .hero-visual::after {
+            position: absolute;
+            z-index: 1;
+            inset: 0;
+            content: "";
+            background:
+                linear-gradient(90deg, rgba(21, 31, 32, 0.96) 0%, rgba(21, 31, 32, 0.78) 36%, rgba(21, 31, 32, 0.08) 76%),
+                linear-gradient(0deg, rgba(21, 31, 32, 0.42), transparent 38%);
+            pointer-events: none;
+        }
+
+        .hero-visual-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 52%;
+            filter: grayscale(1) brightness(0.72) contrast(0.92);
+        }
+
+        .hero-visual-label {
+            position: absolute;
+            z-index: 2;
+            right: clamp(1.25rem, 4vw, 3rem);
+            bottom: clamp(1.25rem, 4vw, 3rem);
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .hero-visual-label strong {
+            display: block;
+            color: var(--palette-mist);
+            font-size: 0.9rem;
+            letter-spacing: -0.025em;
+        }
+
+        .hero-visual-label span {
+            display: block;
+            color: var(--palette-ice);
+            font-size: 0.72rem;
+            margin-top: 0.25rem;
+            opacity: 0.78;
+        }
+
+        .hero-visual-tag {
+            flex: 0 0 auto;
+            padding: 0.45rem 0.7rem;
+            border: 1px solid rgba(183, 194, 191, 0.22);
+            border-radius: 999px;
+            background: rgba(21, 31, 32, 0.68);
+            color: var(--palette-mist);
+            font-size: 0.62rem;
+            font-weight: 700;
+            backdrop-filter: blur(12px);
+        }
+
+        #quickPresets {
+            margin: 1.25rem auto 0;
+        }
+
+        .quick-chip {
+            padding: 0.65rem 0.9rem !important;
+            border-radius: 999px !important;
+            background: rgba(52, 72, 75, 0.32) !important;
+            border-color: rgba(183, 194, 191, 0.14) !important;
+        }
+
+        .quick-chip:hover {
+            background: rgba(83, 105, 107, 0.42) !important;
+            border-color: rgba(183, 194, 191, 0.28) !important;
+            transform: translateY(-1px);
+        }
+
+        #searchBtn {
+            background-image: linear-gradient(110deg, #53696b 0%, #647779 48%, #87999a 100%) !important;
+            box-shadow: 0 12px 26px -18px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        #searchBtn:hover {
+            background-image: linear-gradient(110deg, #46595a 0%, #53696b 52%, #87999a 100%) !important;
+            transform: translateY(-1px);
+        }
+
+        #personaForm {
+            scroll-margin-top: 6rem;
+        }
+
+        .persona-card {
+            min-height: 180px;
+            border-radius: 1.4rem !important;
+        }
+
+        .usecase-option {
+            border-radius: 1rem !important;
+            transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+        }
+
+        .usecase-option:hover {
+            transform: translateY(-2px);
+            border-color: rgba(183, 194, 191, 0.28) !important;
+        }
+
+        body [class*="text-emerald-300"], body [class*="text-emerald-400"] {
+            color: #aebbb5 !important;
+        }
+
+        body [class*="bg-emerald-950"] {
+            background-color: rgba(52, 72, 75, 0.78) !important;
+        }
+
+        body [class*="bg-emerald-900"] {
+            background-color: rgba(70, 89, 90, 0.46) !important;
+        }
+
+        body [class*="border-emerald-"] {
+            border-color: rgba(183, 194, 191, 0.22) !important;
+        }
+
+        body [class*="border-l-indigo-"] {
+            border-left-color: rgba(135, 153, 154, 0.48) !important;
+        }
+
+        @media (max-width: 767px) {
+            .hero-layout {
+                height: 470px;
+            }
+
+            .hero-copy {
+                top: 2rem;
+                left: 1.4rem;
+                width: min(84%, 440px);
+                transform: none;
+            }
+
+            .hero-title {
+                max-width: 12ch;
+                font-size: clamp(2.7rem, 12vw, 4rem);
+            }
+
+            .hero-visual::after {
+                background:
+                    linear-gradient(180deg, rgba(21, 31, 32, 0.92) 0%, rgba(21, 31, 32, 0.68) 48%, rgba(21, 31, 32, 0.18) 100%),
+                    linear-gradient(90deg, rgba(21, 31, 32, 0.3), transparent);
+            }
+
+            .hero-visual-image {
+                object-position: 65% center;
+            }
+
+            .hero-visual-label { right: 1.2rem; bottom: 1.1rem; }
+            .hero-visual-label > div { display: none; }
+
+            #quickPresets {
+                justify-content: flex-start;
+            }
+        }
+
         @media print {
+            .hero-visual { display: none !important; }
             body {
                 background-color: #ffffff !important;
                 color: #000000 !important;
@@ -156,19 +432,14 @@
                 background-color: #f9f9f9 !important;
                 border-color: #e5e5e5 !important;
             }
-            .text-emerald-400 {
-                color: #047857 !important;
-            }
-            .text-sky-400 {
-                color: #0284c7 !important;
-            }
+            .text-emerald-400, .text-sky-400 { color: #333333 !important; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Top Announcement Bar: Hacktoberfest 2026 & Categories -->
-    <div class="bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 text-white text-xs py-2 px-4 border-b border-indigo-900/50 no-print">
+    <div class="inspo-banner bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-950 text-white text-xs py-2 px-4 border-b border-indigo-900/50 no-print">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-400 text-slate-950 shadow-sm">
@@ -177,9 +448,9 @@
                 <span class="text-indigo-200">757 Makerspace (Hampton, VA) × RevolutionVA</span>
             </div>
             <div class="flex items-center gap-2 text-xs flex-wrap">
-                <span class="bg-indigo-900/70 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-700/50 font-medium">🤖 Best Use of Gemma 4</span>
-                <span class="bg-emerald-950/80 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-700/50 font-medium">🌱 Best Community Impact</span>
-                <span class="bg-purple-950/80 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-700/50 font-medium">⚡ Best Open-Source AI</span>
+                <span class="bg-indigo-900/70 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-700/50 font-medium"><i data-lucide="bot" class="inline w-3 h-3 mr-1"></i>Best Use of Gemma 4</span>
+                <span class="bg-emerald-950/80 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-700/50 font-medium"><i data-lucide="leaf" class="inline w-3 h-3 mr-1"></i>Best Community Impact</span>
+                <span class="bg-purple-950/80 text-purple-300 px-2.5 py-0.5 rounded-full border border-purple-700/50 font-medium"><i data-lucide="zap" class="inline w-3 h-3 mr-1"></i>Best Open-Source AI</span>
             </div>
         </div>
     </div>
@@ -188,7 +459,7 @@
     <header class="border-b border-slate-800/80 bg-slate-950/90 sticky top-0 z-50 backdrop-blur-md no-print">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <div class="inspo-mark w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                     <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
                 </div>
                 <div>
@@ -239,35 +510,49 @@
     <main class="flex-1 max-w-7xl mx-auto w-full px-4 py-6 md:py-8 space-y-8">
 
         <!-- Hero Section -->
-        <section class="text-center space-y-3 no-print">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300 mb-1">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-400"></i>
-                <span>FastAPI Agent Loop • Serendipity Scoring • Unexpected Deals</span>
+        <section class="hero-section no-print">
+            <div class="hero-layout">
+                <div class="hero-copy">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-400"></i>
+                        <span>Smarter searches. Better builds.</span>
+                    </div>
+                    <h2 class="hero-title font-extrabold text-white">
+                        Find your next <span class="accent-gradient">great build.</span>
+                    </h2>
+                    <p class="text-slate-400 max-w-xl mt-5 text-sm md:text-base leading-relaxed">
+                        Discover budget-friendly hardware and ready-to-use PCs. Set your budget, choose your use case, and compare listings from connected search sources.
+                    </p>
+                </div>
+                <figure class="hero-visual">
+                    <img class="hero-visual-image" src="./web_inspo/PC%20image.jpg" alt="Illuminated custom PC build with a matching keyboard">
+                    <figcaption class="hero-visual-label">
+                        <div>
+                            <strong>Build something brilliant.</strong>
+                            <span>Hardware discovery, tuned to your budget.</span>
+                        </div>
+                        <span class="hero-visual-tag">PC PARTS · SURPLUS · DEALS</span>
+                    </figcaption>
+                </figure>
             </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
-                Deep PC Search & Sourcing Powered by <span class="accent-gradient">Gemma 4</span>
-            </h2>
-            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-                Connects directly to the <strong>FastAPI Agent Loop</strong> to query municipal surplus on GovDeals (ODU, City of Hampton), eBay certified listings, and verified PCPartPicker builds tailored exactly to your budget.
-            </p>
 
             <!-- Quick Preset Personas -->
-            <div id="quickPresets" class="pt-3 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <div id="quickPresets" class="flex flex-wrap items-center justify-center gap-2 text-xs">
                 <span class="text-slate-500 font-semibold uppercase tracking-wider text-[11px] mr-1">One-Click Demos:</span>
                 <button type="button" onclick="applyPreset(0)" class="quick-chip px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:border-emerald-600 flex items-center gap-1.5">
-                    <span>🎓 Non-Tech Student</span>
+                    <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i><span>Non-Tech Student</span>
                     <span class="text-emerald-400 font-mono font-bold">$100-$350</span>
                 </button>
                 <button type="button" onclick="applyPreset(1)" class="quick-chip px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:border-blue-600 flex items-center gap-1.5">
-                    <span>🎮 1080p Gamer DIY</span>
+                    <i data-lucide="gamepad-2" class="w-3.5 h-3.5"></i><span>1080p Gamer DIY</span>
                     <span class="text-sky-400 font-mono font-bold">$300-$650</span>
                 </button>
                 <button type="button" onclick="applyPreset(2)" class="quick-chip px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:border-indigo-600 flex items-center gap-1.5">
-                    <span>💻 ODU Coder / Local AI</span>
+                    <i data-lucide="code-2" class="w-3.5 h-3.5"></i><span>ODU Coder / Local AI</span>
                     <span class="text-indigo-400 font-mono font-bold">$250-$550</span>
                 </button>
                 <button type="button" onclick="applyPreset(3)" class="quick-chip px-3 py-1.5 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 hover:border-amber-600 flex items-center gap-1.5">
-                    <span>🏛️ Senior / Office Surplus</span>
+                    <i data-lucide="landmark" class="w-3.5 h-3.5"></i><span>Senior / Office Surplus</span>
                     <span class="text-amber-400 font-mono font-bold">$80-$220</span>
                 </button>
             </div>
@@ -396,11 +681,11 @@
                         <!-- Quick Location Chips -->
                         <div class="md:col-span-3 pt-2 border-t border-slate-800/60 flex flex-wrap items-center gap-1.5 text-xs text-slate-400">
                             <span class="text-[11px] font-semibold text-slate-500 uppercase">Quick 757 Pickups:</span>
-                            <button type="button" onclick="setLocation('Hampton, VA (23666)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition">📍 Hampton</button>
-                            <button type="button" onclick="setLocation('Norfolk, VA (ODU Campus)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition">📍 Norfolk / ODU</button>
-                            <button type="button" onclick="setLocation('Virginia Beach, VA (757)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition">📍 Virginia Beach</button>
-                            <button type="button" onclick="setLocation('Newport News, VA (757)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition">📍 Newport News</button>
-                            <button type="button" onclick="setLocation('Nationwide (Free Shipping)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition">🚚 Nationwide Delivery</button>
+                            <button type="button" onclick="setLocation('Hampton, VA (23666)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition"><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i>Hampton</button>
+                            <button type="button" onclick="setLocation('Norfolk, VA (ODU Campus)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition"><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i>Norfolk / ODU</button>
+                            <button type="button" onclick="setLocation('Virginia Beach, VA (757)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition"><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i>Virginia Beach</button>
+                            <button type="button" onclick="setLocation('Newport News, VA (757)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition"><i data-lucide="map-pin" class="inline w-3 h-3 mr-1"></i>Newport News</button>
+                            <button type="button" onclick="setLocation('Nationwide (Free Shipping)')" class="px-2.5 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[11px] transition"><i data-lucide="truck" class="inline w-3 h-3 mr-1"></i>Nationwide Delivery</button>
                         </div>
                     </div>
                 </div>
@@ -416,7 +701,7 @@
                         <label class="usecase-option cursor-pointer p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex flex-col justify-between transition-all">
                             <input type="radio" name="use_case_radio" value="general_student" checked onchange="setUseCase('general_student')" class="sr-only">
                             <div class="space-y-1">
-                                <div class="text-lg">🎓</div>
+                                <i data-lucide="graduation-cap" class="w-5 h-5 mb-1 text-slate-400"></i>
                                 <div class="text-xs font-bold text-white">School & Zoom</div>
                                 <div class="text-[11px] text-slate-400">Web research, docs, streaming</div>
                             </div>
@@ -425,7 +710,7 @@
                         <label class="usecase-option cursor-pointer p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex flex-col justify-between transition-all">
                             <input type="radio" name="use_case_radio" value="gaming" onchange="setUseCase('gaming')" class="sr-only">
                             <div class="space-y-1">
-                                <div class="text-lg">🎮</div>
+                                <i data-lucide="gamepad-2" class="w-5 h-5 mb-1 text-slate-400"></i>
                                 <div class="text-xs font-bold text-white">1080p Gaming</div>
                                 <div class="text-[11px] text-slate-400">Fortnite, Roblox, Valorant, AAA</div>
                             </div>
@@ -434,7 +719,7 @@
                         <label class="usecase-option cursor-pointer p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex flex-col justify-between transition-all">
                             <input type="radio" name="use_case_radio" value="coding_ai" onchange="setUseCase('coding_ai')" class="sr-only">
                             <div class="space-y-1">
-                                <div class="text-lg">💻</div>
+                                <i data-lucide="code-2" class="w-5 h-5 mb-1 text-slate-400"></i>
                                 <div class="text-xs font-bold text-white">Coding & AI</div>
                                 <div class="text-[11px] text-slate-400">Python, Docker, local LLMs</div>
                             </div>
@@ -443,7 +728,7 @@
                         <label class="usecase-option cursor-pointer p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex flex-col justify-between transition-all">
                             <input type="radio" name="use_case_radio" value="content_creation" onchange="setUseCase('content_creation')" class="sr-only">
                             <div class="space-y-1">
-                                <div class="text-lg">🎬</div>
+                                <i data-lucide="film" class="w-5 h-5 mb-1 text-slate-400"></i>
                                 <div class="text-xs font-bold text-white">Video Editing</div>
                                 <div class="text-[11px] text-slate-400">Premiere, DaVinci, graphic design</div>
                             </div>
@@ -452,7 +737,7 @@
                         <label class="usecase-option cursor-pointer p-3.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 flex flex-col justify-between transition-all">
                             <input type="radio" name="use_case_radio" value="budget_office" onchange="setUseCase('budget_office')" class="sr-only">
                             <div class="space-y-1">
-                                <div class="text-lg">📊</div>
+                                <i data-lucide="chart-no-axes-column-increasing" class="w-5 h-5 mb-1 text-slate-400"></i>
                                 <div class="text-xs font-bold text-white">Home Office</div>
                                 <div class="text-[11px] text-slate-400">Spreadsheets & multi-monitor</div>
                             </div>
@@ -472,7 +757,7 @@
                     <button type="submit" id="searchBtn"
                         class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-sm shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
                         <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
-                        <span>Run Deep Search Agent with Gemma 4</span>
+                        <span>Start my search</span>
                     </button>
                 </div>
             </form>
@@ -517,7 +802,7 @@
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-950 text-indigo-300 border border-indigo-700 flex items-center gap-1.5">
                                 <i data-lucide="bot" class="w-3.5 h-3.5 text-indigo-400"></i>
-                                Gemma 4 Deep Search Assessment
+                                Backend Search Summary
                             </span>
                             <span class="text-xs text-slate-500" id="searchTimestamp"></span>
                         </div>
@@ -547,14 +832,22 @@
                 </div>
             </div>
 
+            <section class="space-y-4">
+                <div>
+                    <h3 class="text-xl font-extrabold text-white">Live Backend Listings</h3>
+                    <p class="text-xs text-slate-400">Parts and systems returned by the connected search sources.</p>
+                </div>
+                <div id="backendListings" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            </section>
+
             <!-- View Switcher & Action Controls -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print">
                 <div>
                     <h3 class="text-xl md:text-2xl font-extrabold text-white flex items-center gap-2">
-                        Your 3 Tailored Configurations
+                        Example Configurations
                         <span class="text-xs font-normal text-slate-400">(Options 1, 2, and 3)</span>
                     </h3>
-                    <p class="text-xs text-slate-400">Engineered to compare extreme value surplus, balanced daily performance, and peak power within budget.</p>
+                    <p class="text-xs text-slate-400">Illustrative examples, shown separately from the live backend listings above.</p>
                 </div>
 
                 <div class="flex items-center gap-2 self-stretch sm:self-auto justify-end">
@@ -683,7 +976,7 @@
                     const res = await fetch(`${base}/sources`, { method: "GET", headers: { "Accept": "application/json" } });
                     if (res.ok) {
                         const sources = await res.json();
-                        activeSources = Array.isArray(sources) ? sources : ["mock"];
+                        activeSources = Array.isArray(sources.enabled_sources) ? sources.enabled_sources : [];
                         apiBaseUrl = base;
                         connected = true;
                         break;
@@ -701,16 +994,16 @@
                 statusDot.className = "w-2 h-2 rounded-full bg-sky-400";
                 statusText.textContent = "Agent Mode (Client / Standalone)";
                 statusBadge.className = "inline-flex items-center gap-1.5 text-xs text-sky-400 bg-sky-950/80 border border-sky-800 px-3 py-1.5 rounded-full font-medium";
-                activeSources = ["mock", "ebay", "govdeals_757", "facebook_marketplace"];
+                activeSources = [];
             }
 
             // Render source badges in the header bar
-            sourcesContainer.innerHTML = activeSources.map(s => `
+            sourcesContainer.innerHTML = activeSources.length ? activeSources.map(s => `
                 <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-slate-900 border border-slate-700 text-sky-300">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                     ${s}
                 </span>
-            `).join('');
+            `).join('') : '<span class="text-slate-500">No backend sources connected</span>';
         }
 
         function setTechSavvyMode(isTechSavvy) {
@@ -919,22 +1212,29 @@
                 };
 
                 // 2. Attempt POST /search against the FastAPI backend
-                const endpoints = [`${apiBaseUrl}/search`, "/search", "http://127.0.0.1:8000/search"];
+                const endpoints = [...new Set([`${apiBaseUrl}/search`, "/search", "http://127.0.0.1:8000/search"])];
                 for (const url of endpoints) {
+                    let response;
                     try {
-                        const response = await fetch(url, {
+                        response = await fetch(url, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(handshakePayload)
                         });
-                        if (response.ok) {
-                            apiRawListings = await response.json();
-                            console.log("Successfully received listings from FastAPI:", apiRawListings);
-                            break;
-                        }
                     } catch (e) {
-                        // try next endpoint
+                        continue;
                     }
+
+                    if (!response.ok) {
+                        const detail = await response.text();
+                        throw new Error(`Backend search failed (${response.status}): ${detail}`);
+                    }
+
+                    apiRawListings = await response.json();
+                    if (!Array.isArray(apiRawListings)) {
+                        throw new Error("Backend search returned an invalid response.");
+                    }
+                    break;
                 }
 
                 // 3. Transform API listings or fallback into 3 Configurations
@@ -1006,20 +1306,6 @@
                 }
             ];
 
-            // If API returned real listings from backend, incorporate them!
-            if (Array.isArray(apiListings) && apiListings.length > 0) {
-                apiListings.forEach((item, i) => {
-                    if (item.parsed_part && item.current_price <= persona.price_max) {
-                        const parsed = item.parsed_part;
-                        if (parsed.category === 'bundle' || isNonTech) {
-                            defaultPrebuilts[i % 3].title = item.raw_title;
-                            defaultPrebuilts[i % 3].price = item.current_price;
-                            defaultPrebuilts[i % 3].vendor = item.source_name;
-                        }
-                    }
-                });
-            }
-
             if (isNonTech) {
                 // STRICT RULE: ONLY PREBUILTS
                 configs.push(createPrebuiltConfig("config-01", "The Community Value Champion", "Best Budget & Eco-Savings", defaultPrebuilts[0], persona));
@@ -1050,7 +1336,10 @@
             return {
                 persona: persona,
                 configurations: configs,
-                gemma_summary: `FastAPI Agent Loop completed deep query expansion across active sources [${activeSources.join(', ')}] for ${persona.location}. Sourced tested municipal surplus from ODU and Hampton City auctions, keeping ${totalEwaste.toFixed(1)} lbs of electronics out of landfills while strictly honoring your $${persona.price_min} - $${persona.price_max} budget.`,
+                gemma_summary: Array.isArray(apiListings)
+                    ? `The backend returned ${apiListings.length} listing${apiListings.length === 1 ? '' : 's'} from [${activeSources.join(', ')}]. The example configurations below are illustrative and are not generated from those listings.`
+                    : "The backend is unavailable. The example configurations below are illustrative and no live listings were searched.",
+                backend_listings: Array.isArray(apiListings) ? apiListings : [],
                 community_impact_summary: {
                     total_e_waste_diverted_lbs: parseFloat(totalEwaste.toFixed(1)),
                     average_community_savings_usd: parseFloat(avgSavings.toFixed(2))
@@ -1134,6 +1423,7 @@
             ewasteDiverted.textContent = `${data.community_impact_summary.total_e_waste_diverted_lbs} lbs`;
             avgSavings.textContent = `$${data.community_impact_summary.average_community_savings_usd}`;
 
+            renderBackendListings(data.backend_listings, data.persona.price_max);
             grid.innerHTML = "";
 
             data.configurations.forEach((config, idx) => {
@@ -1146,6 +1436,68 @@
             resultsContainer.classList.remove("hidden");
             resultsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
             initIcons();
+        }
+
+        function renderBackendListings(listings, maxPrice) {
+            const container = document.getElementById("backendListings");
+            container.replaceChildren();
+
+            const matchingListings = listings.filter(item =>
+                Number.isFinite(item.current_price) &&
+                item.current_price <= maxPrice
+            );
+
+            if (matchingListings.length === 0) {
+                const emptyState = document.createElement("p");
+                emptyState.className = "text-sm text-slate-400";
+                emptyState.textContent = listings.length
+                    ? "No backend listings are within your maximum price."
+                    : "No backend listings were returned.";
+                container.appendChild(emptyState);
+                return;
+            }
+
+            matchingListings.forEach(item => {
+                const card = document.createElement("article");
+                card.className = "glass-card rounded-2xl p-4 space-y-2";
+
+                const title = document.createElement("h4");
+                title.className = "font-bold text-white";
+                title.textContent = item.raw_title;
+
+                const detail = document.createElement("p");
+                detail.className = "text-xs text-slate-400";
+                const part = item.parsed_part;
+                detail.textContent = part
+                    ? `${part.category} · ${part.model_name} · ${item.source_name}`
+                    : `Uncategorized · ${item.source_name}`;
+
+                const price = document.createElement("p");
+                price.className = "font-mono text-emerald-400 font-bold";
+                price.textContent = new Intl.NumberFormat(undefined, {
+                    style: "currency",
+                    currency: item.currency || "USD"
+                }).format(item.current_price);
+
+                card.append(title, detail, price);
+
+                try {
+                    const url = new URL(item.raw_url);
+                    if (url.protocol === "http:" || url.protocol === "https:") {
+                        const link = document.createElement("a");
+                        link.className = "inline-block text-xs text-sky-400 hover:text-sky-300 underline";
+                        link.href = url.href;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        link.textContent = "View listing";
+                        card.appendChild(link);
+                    }
+                } catch {
+                    // Omit malformed listing links while retaining the listing.
+                }
+
+                container.appendChild(card);
+            });
         }
 
         function createConfigurationCard(config, index, persona) {

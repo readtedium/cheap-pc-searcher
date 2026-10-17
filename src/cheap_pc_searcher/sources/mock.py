@@ -12,8 +12,8 @@ class MockSource(BaseSource):
     without needing network access or API keys.
     """
 
-    def __init__(self):
-        super().__init__(name="mock")
+    def __init__(self, name: str = "mock"):
+        super().__init__(name=name)
         self._data = {
             "cpu": [
                 Listing(
@@ -58,7 +58,22 @@ class MockSource(BaseSource):
                         condition=Condition.USED
                     )
                 )
-            ]
+            ],
+            "bundle": [
+                Listing(
+                    source_name=name,
+                    raw_title="Refurbished Dell OptiPlex Desktop PC",
+                    raw_url="https://example.com/4",
+                    current_price=145.0,
+                    parsed_part=Part(
+                        category=PartCategory.BUNDLE,
+                        brand="Dell",
+                        model_name="OptiPlex Desktop PC",
+                        specs={"type": "desktop"},
+                        condition=Condition.REFURBISHED
+                    )
+                )
+            ],
         }
 
     async def search(self, query: str, limit: int = 20) -> List[Listing]:
@@ -68,22 +83,13 @@ class MockSource(BaseSource):
         query_lower = query.lower()
         results = []
         
-        # Very primitive search logic for mock
+        category_terms = {
+            "cpu": ("cpu", "processor"),
+            "ram": ("ram", "memory"),
+            "bundle": ("pc", "desktop", "prebuilt", "bundle"),
+        }
         for category, listings in self._data.items():
-            if category in query_lower or any(c in query_lower for c in [cat.value for cat in PartCategory if cat.value in query_lower]):
-                # If query is "cpu", match "cpu" category
-                # This is a bit hacky for a mock but works for the loop
-                pass
-            
-            # Actually, let's just check if the category name is in the query
-            # or if the query is generic enough to match everything
-            if any(cat_val in query_lower for cat_val in ["cpu", "ram", "gpu", "pc"]):
-                # Check if the category itself matches the query keyword
-                if category == "cpu" and "cpu" in query_lower:
-                    results.extend(listings)
-                elif category == "ram" and "ram" in query_lower:
-                    results.extend(listings)
-                elif "pc" in query_lower:
-                    results.extend(listings)
+            if any(term in query_lower for term in category_terms[category]):
+                results.extend(listings)
         
         return results[:limit]
