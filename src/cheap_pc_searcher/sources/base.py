@@ -3,7 +3,23 @@ from __future__ import annotations
 import re
 from abc import ABC, abstractmethod
 from typing import List
-from .models import Listing
+from cheap_pc_searcher.models import Listing
+
+
+# Matches "$120", "$1,050.50", "$ 75" in titles/descriptions
+_PRICE_RE = re.compile(r"\$\s*([0-9][0-9,]*(?:\.\d{1,2})?)")
+
+
+def extract_price(*texts: str) -> float:
+    """
+    Best-effort price extraction from raw listing text.
+    Returns 0.0 when no price can be found (the agent loop sorts those last).
+    """
+    for text in texts:
+        match = _PRICE_RE.search(text or "")
+        if match:
+            return float(match.group(1).replace(",", ""))
+    return 0.0
 
 
 class BaseSource(ABC):

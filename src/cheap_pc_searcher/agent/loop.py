@@ -69,6 +69,8 @@ class AgentLoop:
         for category, part in target.parts.items():
             # Basic query: "Ryzen 5 5600X"
             queries.append(part.model_name)
+            # Category query: "cpu", "bundle", ...
+            queries.append(category.value)
             # Expansion query: "AM4 CPU"
             if category == PartCategory.CPU and "socket" in part.specs:
                 queries.append(f"{part.specs['socket']} CPU")
