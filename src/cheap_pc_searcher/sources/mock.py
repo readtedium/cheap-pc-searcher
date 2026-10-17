@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 import asyncio
 from typing import List
 from .base import BaseSource
-from ..models import Listing, Part, PartCategory, Condition
+from cheap_pc_searcher.models import Listing, Part, PartCategory, Condition
 
 
 class MockSource(BaseSource):
@@ -12,8 +13,8 @@ class MockSource(BaseSource):
     without needing network access or API keys.
     """
 
-    def __init__(self):
-        super().__init__(name="mock")
+    def __init__(self, name: str = "mock"):
+        super().__init__(name=name)
         self._data = {
             "cpu": [
                 Listing(
@@ -64,26 +65,16 @@ class MockSource(BaseSource):
     async def search(self, query: str, limit: int = 20) -> List[Listing]:
         # Simulate network latency
         await asyncio.sleep(0.1)
-        
-        query_lower = query.lower()
+
+        query_tokens = set(re.findall(r"[a-z0-9]+", query.lower()))
         results = []
-        
-        # Very primitive search logic for mock
+
+        # Match on category name or word overlap with the listing title, so
+        # queries like "Ryzen 5 3600" or "DDR4 RAM" surface the right fixtures.
         for category, listings in self._data.items():
-            if category in query_lower or any(c in query_lower for c in [cat.value for cat in PartCategory if cat.value in query_lower]):
-                # If query is "cpu", match "cpu" category
-                # This is a bit hacky for a mock but works for the loop
-                pass
-            
-            # Actually, let's just check if the category name is in the query
-            # or if the query is generic enough to match everything
-            if any(cat_val in query_lower for cat_val in ["cpu", "ram", "gpu", "pc"]):
-                # Check if the category itself matches the query keyword
-                if category == "cpu" and "cpu" in query_lower:
-                    results.extend(listings)
-                elif category == "ram" and "ram" in query_lower:
-                    results.extend(listings)
-                elif "pc" in query_lower:
-                    results.extend(listings)
-        
+            for listing in listings:
+                title_tokens = set(re.findall(r"[a-z0-9]+", listing.raw_title.lower()))
+                if category in query_tokens or query_tokens & title_tokens:
+                    results.append(listing)
+
         return results[:limit]

@@ -23,17 +23,23 @@ class Normalizer:
         Attempts to parse the listing. If heuristics fail or confidence is low,
         it falls back to the LLM.
         """
+        # A source that already normalized the listing (e.g. fixtures) wins
+        if listing.parsed_part:
+            return listing
+
         # 1. Try Heuristics first
         part = self._apply_heuristics(listing)
-        
+
         # 2. Check if we need the LLM
         # We use the LLM if:
         # - No part was found
         # - It's a bundle (hard to parse with regex)
         # - The confidence is low (subjective, but can be implemented)
         if not part or listing.is_bundle or self._is_messy(listing.raw_title):
-            part = await self._apply_llm(listing)
-        
+            llm_part = await self._apply_llm(listing)
+            # Keep the heuristic result when the LLM is unavailable or fails
+            part = llm_part or part
+
         if part:
             listing.parsed_part = part
         

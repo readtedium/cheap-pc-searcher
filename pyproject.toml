@@ -1,0 +1,16 @@
+[project]
+name = "cheap-pc-searcher"
+version = "0.1.0"
+description = "Deep-searching multiple marketplaces for inexpensive PC components"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "httpx",
+    "pydantic",
+    "pydantic-settings",
+]
+
+[tool.uv]
+managed = true
