@@ -6,6 +6,7 @@ from .ebay import EbaySource
 from .reddit import RedditSource
 from .mock import MockSource
 from .craigslist import CraigslistSource
+from .websearch import WebSearchSource
 from ._stubs import NeweggSource, AmazonSource, FBMarketplaceSource
 
 
@@ -21,6 +22,7 @@ class SourceRegistry:
             "ebay": EbaySource,
             "reddit": RedditSource,
             "craigslist": CraigslistSource,
+            "websearch": WebSearchSource,
             "newegg": NeweggSource,
             "amazon": AmazonSource,
             "facebook": FBMarketplaceSource,

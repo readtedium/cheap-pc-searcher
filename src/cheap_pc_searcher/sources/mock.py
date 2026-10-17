@@ -78,30 +78,20 @@ class MockSource(BaseSource):
             ]
         }
 
-    # Query synonyms so expanded queries ("processor", "memory", "prebuilt") match
+    # Query synonyms so expanded queries ("processor", "ryzen", "prebuilt") match
     _CATEGORY_TERMS = {
-        "cpu": ("cpu", "processor"),
-        "ram": ("ram", "memory"),
-        "bundle": ("pc", "desktop", "prebuilt", "bundle"),
+        "cpu": ("cpu", "processor", "ryzen", "intel", "xeon", "threadripper"),
+        "ram": ("ram", "memory", "ddr"),
+        "bundle": ("pc", "desktop", "prebuilt", "bundle", "computer"),
     }
 
     async def search(self, query: str, limit: int = 20) -> List[Listing]:
         # Simulate network latency
         await asyncio.sleep(0.1)
 
-        query_lower = query.lower()
+        query_tokens = set(re.findall(r"[a-z0-9]+", query.lower()))
         results = []
 
-<<<<<<< HEAD
-        category_terms = {
-            "cpu": ("cpu", "processor", "ryzen", "intel", "xeon", "threadripper"),
-            "ram": ("ram", "memory", "ddr"),
-            "bundle": ("pc", "desktop", "prebuilt", "bundle", "computer"),
-        }
-        for category, listings in self._data.items():
-            if any(term in query_lower for term in category_terms[category]):
-                results.extend(listings)
-=======
         # Match on category name, query synonyms, the normalized category, or
         # word overlap with the listing title, so queries like "Ryzen 5 3600",
         # "DDR4 RAM", or "Complete Prebuilt Desktop" surface the right fixtures.
@@ -118,6 +108,5 @@ class MockSource(BaseSource):
                     part_tokens.add(listing.parsed_part.category.value)
                 if part_tokens & query_tokens or query_tokens & title_tokens:
                     results.append(listing)
->>>>>>> f438e5e93b19fce5989cc383a719cee8d3eadeb8
 
         return results[:limit]

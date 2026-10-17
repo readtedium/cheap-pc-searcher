@@ -1,29 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-<<<<<<< HEAD
-from typing import List
-
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-
-from ..agent.loop import AgentLoop
-from ..config import Settings
-from ..models import Listing
-from ..normalize import Normalizer
-from ..sources.registry import SourceRegistry
-
-app = FastAPI(title="Cheap PC Searcher API")
-web_directory = Path(__file__).resolve().parents[3] / "web"
-app.mount("/web_inspo", StaticFiles(directory=web_directory / "web_inspo"), name="web-inspo")
-
-settings = Settings()
-registry = SourceRegistry(settings.model_dump())
-normalizer = Normalizer()
-agent_loop = AgentLoop(registry=registry, normalizer=normalizer)
-=======
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -38,17 +15,12 @@ from cheap_pc_searcher.agent.loop import AgentLoop
 from cheap_pc_searcher.sources.registry import SourceRegistry
 from cheap_pc_searcher.normalize import Normalizer
 
->>>>>>> f438e5e93b19fce5989cc383a719cee8d3eadeb8
 
 # --- Models for the API Request/Response ---
 
 class SearchRequest(BaseModel):
-<<<<<<< HEAD
-    target_build_json: str
-=======
     """
     The payload sent by the Frontend.
->>>>>>> f438e5e93b19fce5989cc383a719cee8d3eadeb8
 
     Accepts either handshake shape:
       {"target_build_json": "<json str>"}  — stringified target build (web UI)
@@ -73,10 +45,10 @@ class SourceStatus(BaseModel):
 # --- Dependency Injection ---
 
 # Config comes from the environment (or .env); see config.py and .env.example
-_settings = Settings()
-_registry = SourceRegistry(_settings.model_dump())
-_normalizer = Normalizer()
-agent_loop = AgentLoop(registry=_registry, normalizer=_normalizer)
+settings = Settings()
+registry = SourceRegistry(settings.model_dump())
+normalizer = Normalizer()
+agent_loop = AgentLoop(registry=registry, normalizer=normalizer)
 
 
 app = FastAPI(
@@ -102,15 +74,6 @@ app.mount("/web_inspo", StaticFiles(directory=web_directory / "web_inspo"), name
 
 @app.get("/")
 async def root():
-<<<<<<< HEAD
-    return FileResponse(web_directory / "index.html")
-
-
-@app.get("/sources")
-async def list_sources():
-    """Returns a list of currently enabled search sources."""
-    return {"enabled_sources": registry.get_enabled_sources()}
-=======
     """Serve the single-file web UI."""
     return FileResponse(web_directory / "index.html")
 
@@ -123,15 +86,14 @@ async def health_check():
 @app.get("/sources")
 async def get_sources():
     """Returns the enabled source names (shape expected by the web UI)."""
-    enabled = _registry.get_enabled_sources()
+    enabled = registry.get_enabled_sources()
     return {
         "enabled_sources": enabled,
         "sources": [
             SourceStatus(name=name, enabled=(name in enabled))
-            for name in _registry.known_sources()
+            for name in registry.known_sources()
         ],
     }
->>>>>>> f438e5e93b19fce5989cc383a719cee8d3eadeb8
 
 
 @app.post("/search", response_model=List[Listing])
@@ -140,9 +102,6 @@ async def search_parts(request: SearchRequest):
     The agent plans, searches, normalizes, and validates listings for a target build.
     """
     try:
-<<<<<<< HEAD
-        results = await agent_loop.run(request.target_build_json)
-=======
         # The AgentLoop.run expects a JSON string representing the TargetBuild.
         # Normalize either handshake shape into that string.
         if request.target_build is not None:
@@ -151,7 +110,6 @@ async def search_parts(request: SearchRequest):
             target_json = request.target_build_json
 
         results = await agent_loop.run(target_json)
->>>>>>> f438e5e93b19fce5989cc383a719cee8d3eadeb8
         return results
     except Exception as e:
         print(f"Search Error: {e}")
