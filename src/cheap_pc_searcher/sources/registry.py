@@ -1,47 +1,68 @@
 from __future__ import annotations
 
-from typing import Dict, List, Type
-from ..sources.base import BaseSource
-from ..sources.mock import MockSource
+from typing import List, Dict, Any
+from .base import BaseSource
+from .ebay import EbaySource
+from .reddit import RedditSource
+from .mock import MockSource
+from .craigslist import CraigslistSource
+from ._stubs import NeweggSource, AmazonSource, FBMarketplaceSource
 
 
 class SourceRegistry:
     """
-    Manages the registration and instantiation of search sources.
-    This allows the Agent to easily 'fan out' to all enabled sources.
+    Manages the registration and instantiation of search sources
+    based on configuration.
     """
 
-    def __init__(self):
-        # Map of name -> Source Class
-        self._available_sources: Dict[str, Type[BaseSource]] = {
+    def __init__(self, config: Dict[str, Any]):
+        self._available_sources = {
             "mock": MockSource,
-            # "ebay": EbaySource,  <-- To be implemented
-            # "reddit": RedditSource, <-- To be implemented
-            # "shopgoodwill": ShopGoodwillSource, <-- To be implemented
+            "ebay": EbaySource,
+            "reddit": RedditSource,
+            "craigslist": CraigslistSource,
+            "newegg": NeweggSource,
+            "amazon": AmazonSource,
+            "facebook": FBMarketplaceSource,
         }
-        # Instances of initialized sources
         self._instances: Dict[str, BaseSource] = {}
+        self._config = config
+
+    def known_sources(self) -> List[str]:
+        """Names of every source the registry knows how to build."""
+        return list(self._available_sources)
 
     def get_enabled_sources(self) -> List[str]:
-        """Returns the names of all currently instantiated sources."""
-        return list(self._instances.keys())
+        """Returns the names of sources enabled in the config."""
+        return self._config.get("enabled_sources", ["mock"])
 
     def get_source(self, name: str) -> BaseSource:
-        """Retrieves an existing source instance or creates a new one."""
         if name in self._instances:
             return self._instances[name]
-        
-        if name in self._available_sources:
+
+        if name not in self._available_sources:
+            raise ValueError(f"Source '{name}' is not registered.")
+
+        # Initialize with specific config secrets
+        if name == "ebay":
+            instance = EbaySource(name=name, api_key=self._config.get("ebay_api_key", ""))
+        elif name == "reddit":
+            instance = RedditSource(
+                name=name,
+                client_id=self._config.get("reddit_client_id", ""),
+                client_secret=self._config.get("reddit_client_secret", ""),
+            )
+        elif name == "craigslist":
+            instance = CraigslistSource(
+                name=name,
+                city=self._config.get("craigslist_city", "hampton"),
+            )
+        else:
             instance = self._available_sources[name](name=name)
-            self._instances[name] = instance
-            return instance
-        
-        raise ValueError(f"Source '{name}' is not registered.")
+
+        self._instances[name] = instance
+        return instance
 
     def get_all_instances(self) -> List[BaseSource]:
-        """Returns all active source instances."""
-        # Ensure all known sources are instantiated for the fan-out
-        for name in self._available_sources:
-            if name not in self._instances:
-                self.get_source(name)
-        return list(self._instances.values())
+        enabled_names = self.get_enabled_sources()
+        return [self.get_source(name) for name in enabled_names]

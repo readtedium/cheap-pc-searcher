@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import asyncio
 from typing import List, Dict, Any
-from ..models import Listing, PartCategory
-from ..sources.registry import SourceRegistry
-from ..normalize import Normalizer
-from ..compatibility.engine import CompatibilityEngine
-from ..agent.planner import TargetBuild
+from cheap_pc_searcher.models import Listing, PartCategory, Severity, TargetBuild
+from cheap_pc_searcher.sources.registry import SourceRegistry
+from cheap_pc_searcher.normalize import Normalizer
+from cheap_pc_searcher.compatibility.engine import CompatibilityEngine
 
 
 class AgentLoop:
@@ -41,18 +40,24 @@ class AgentLoop:
 
         # 3. Score & Filter (Compatibility check)
         final_results = []
+        seen_urls = set()
         for listing in all_listings:
+            # Multiple queries can surface the same listing; keep the first
+            if listing.raw_url in seen_urls:
+                continue
+            seen_urls.add(listing.raw_url)
+
             if listing.parsed_part:
                 issues = self.compatibility_engine.check(target_build, listing.parsed_part)
-                
-                # Filter out critical mismatches
-                if not any(i.severity == "critical" for i in issues):
-                    # Add issues to the listing for the UI to show
-                    # (In a real app, we might add an 'issues' field to Listing)
+                listing.issues = issues
+
+                # Filter out critical mismatches; warnings stay and are
+                # surfaced to the UI via listing.issues
+                if not any(i.severity == Severity.CRITICAL for i in issues):
                     final_results.append(listing)
-        
-        # 4. Sort by price (simple heuristic for now)
-        final_results.sort(key=lambda x: x.current_price)
+
+        # 4. Sort by price; unpriced listings (e.g. Reddit) go last
+        final_results.sort(key=lambda x: (x.current_price <= 0, x.current_price))
         
         return final_results
 

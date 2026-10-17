@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import re
 import asyncio
 from typing import List
 from .base import BaseSource
-from ..models import Listing, Part, PartCategory, Condition
+from cheap_pc_searcher.models import Listing, Part, PartCategory, Condition
 
 
 class MockSource(BaseSource):
@@ -26,8 +27,8 @@ class MockSource(BaseSource):
                         brand="AMD",
                         model_name="Ryzen 5 3600",
                         specs={"socket": "AM4", "cores": 6},
-                        condition=Condition.USED
-                    )
+                        condition=Condition.USED,
+                    ),
                 ),
                 Listing(
                     source_name="mock",
@@ -40,9 +41,9 @@ class MockSource(BaseSource):
                         brand="Intel",
                         model_name="Unknown Intel CPUs",
                         specs={"type": "bundle"},
-                        condition=Condition.USED
-                    )
-                )
+                        condition=Condition.USED,
+                    ),
+                ),
             ],
             "ram": [
                 Listing(
@@ -55,8 +56,8 @@ class MockSource(BaseSource):
                         brand="Generic",
                         model_name="DDR4 16GB 3200MHz",
                         specs={"capacity": "16GB", "type": "DDR4", "speed": "3200MHz"},
-                        condition=Condition.USED
-                    )
+                        condition=Condition.USED,
+                    ),
                 )
             ],
             "bundle": [
@@ -70,8 +71,8 @@ class MockSource(BaseSource):
                         brand="Dell",
                         model_name="OptiPlex Desktop PC",
                         specs={"type": "desktop"},
-                        condition=Condition.REFURBISHED
-                    )
+                        condition=Condition.REFURBISHED,
+                    ),
                 )
             ],
         }
@@ -79,17 +80,29 @@ class MockSource(BaseSource):
     async def search(self, query: str, limit: int = 20) -> List[Listing]:
         # Simulate network latency
         await asyncio.sleep(0.1)
-        
-        query_lower = query.lower()
+
+        query_tokens = set(re.findall(r"[a-z0-9]+", query.lower()))
         results = []
-        
-        category_terms = {
-            "cpu": ("cpu", "processor"),
-            "ram": ("ram", "memory"),
-            "bundle": ("pc", "desktop", "prebuilt", "bundle"),
-        }
+
+        # Very primitive search logic for mock
         for category, listings in self._data.items():
-            if any(term in query_lower for term in category_terms[category]):
-                results.extend(listings)
-        
+            if category in query_lower or any(
+                c in query_lower
+                for c in [cat.value for cat in PartCategory if cat.value in query_lower]
+            ):
+                # If query is "cpu", match "cpu" category
+                # This is a bit hacky for a mock but works for the loop
+                pass
+
+            # Actually, let's just check if the category name is in the query
+            # or if the query is generic enough to match everything
+            if any(cat_val in query_lower for cat_val in ["cpu", "ram", "gpu", "pc"]):
+                # Check if the category itself matches the query keyword
+                if category == "cpu" and "cpu" in query_lower:
+                    results.extend(listings)
+                elif category == "ram" and "ram" in query_lower:
+                    results.extend(listings)
+                elif "pc" in query_lower:
+                    results.extend(listings)
+
         return results[:limit]

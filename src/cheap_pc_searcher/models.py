@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
@@ -34,8 +33,7 @@ class Severity(str, Enum):
     CRITICAL = "critical"
 
 
-@dataclass
-class CompatibilityIssue:
+class CompatibilityIssue(BaseModel):
     component: str
     message: str
     severity: Severity
@@ -83,3 +81,35 @@ class Listing(BaseModel):
     
     # For ShopGoodwill/eBay: indicates if it's an auction or buy-it-now
     listing_type: str = "fixed"  # "fixed" or "auction"
+
+    # Compatibility findings attached by the AgentLoop after validation
+    issues: List[CompatibilityIssue] = Field(default_factory=list)
+
+
+class TargetBuild(BaseModel):
+    """
+    Represents the user's current hardware setup to validate against.
+    """
+    parts: Dict[PartCategory, Part] = Field(default_factory=dict)
+
+    # Global constraints
+    total_wattage_limit: float = 0.0
+    case_form_factor: Optional[str] = None  # e.g., "ATX", "mATX", "ITX"
+    gpu_max_length_mm: Optional[float] = None
+
+    @classmethod
+    def from_json(cls, json_str: str) -> TargetBuild:
+        import json
+        data = json.loads(json_str)
+
+        parts = {}
+        for cat_str, part_data in data.get("parts", {}).items():
+            cat = PartCategory(cat_str)
+            parts[cat] = Part(**part_data)
+
+        return cls(
+            parts=parts,
+            total_wattage_limit=data.get("total_wattage_limit", 0.0),
+            case_form_factor=data.get("case_form_factor"),
+            gpu_max_length_mm=data.get("gpu_max_length_mm")
+        )

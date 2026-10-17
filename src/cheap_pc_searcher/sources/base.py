@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from typing import List
-from ..models import Listing
+from .models import Listing
 
 
 class BaseSource(ABC):
     """
     The Abstract Base Class for all component sources.
-    Each implementation (eBay, Reddit, ShopGoodwill) must implement `search`.
+    Each implementation (eBay, Reddit, Craigslist, ...) must implement `search`.
     """
 
     def __init__(self, name: str):

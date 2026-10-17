@@ -1,21 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
-from ..models import Part, PartCategory, CompatibilityIssue, Severity
-
-
-@dataclass
-class TargetBuild:
-    """
-    Represents the user's current hardware setup to validate against.
-    """
-    parts: Dict[PartCategory, Part] = field(default_factory=dict)
-    
-    # Global constraints
-    total_wattage_limit: float = 0.0
-    case_form_factor: Optional[str] = None  # e.g., "ATX", "mATX", "ITX"
-    gpu_max_length_mm: Optional[float] = None
+from typing import List
+from cheap_pc_searcher.models import Part, PartCategory, CompatibilityIssue, Severity, TargetBuild
 
 
 class CompatibilityEngine:
