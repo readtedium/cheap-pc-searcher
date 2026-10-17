@@ -1,154 +1,88 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional
-from .models import Listing, Part, PartCategory
+import asyncio
+from typing import List, Dict, Any
+from ..models import Listing, PartCategory
+from ..sources.registry import SourceRegistry
+from ..normalize import Normalizer
+from ..compatibility.engine import CompatibilityEngine
+from ..agent.planner import TargetBuild
 
-@dataclass
-class TargetBuild:
-    """
-    The desired PC configuration. 
-    The agent uses this to generate search queries.
-    """
-    name: str
-    required_parts: Dict[PartCategory, Dict[str, Any]]
-    # e.g. {PartCategory.CPU: {"socket": "AM4", "min_cores": 6}, ...}
-
-class CompatibilityEngine:
-    """
-    STUB: In a real implementation, this would check if parts fit together
-    (e.g. CPU socket vs Motherboard socket).
-    """
-    async def score_and_filter(
-        self, 
-        listings: List[Listing], 
-        target: TargetBuild
-    ) -> List[Listing]:
-        # TODO: Implement actual compatibility and value scoring.
-        # For now, we just fall back to returning everything that has a parsed_part.
-        
-        scored = []
-        for listing in listings:
-            if listing.parsed_part:
-                # Simple heuristic: if it's a bundle, we might give it a neutral score
-                # if it's a specific part, we'd check against target requirements.
-                scored.append(listing)
-        
-        # Sort by price (ascending) as a naive "value" metric
-        return sorted(scored, key=lambda x: x.current_price)
 
 class AgentLoop:
-    """
-    The core orchestrator for finding components.
-    """
-    def __init__(
-        self,
-        sources: List[Any],
-        normalizer: Any,
-        compatibility_engine: CompatibilityEngine
-    ):
-        self.sources = sources
+    def __init__(self, registry: SourceRegistry, normalizer: Normalizer):
+        self.registry = registry
         self.normalizer = normalizer
-        self.compatibility_engine = compatibility_engine
+        self.compatibility_engine = CompatibilityEngine()
 
-    async def run(self, target: TargetBuild, max_iterations: int = 3) -> Dict[str, List[Listing]]:
+    async def run(self, target_build_json: str) -> List[Listing]:
         """
-        Executes the Plan -> Search -> Normalize -> Score/Filter -> Reflect loop.
-        Returns a mapping of PartCategory to best available Listings.
+        The core orchestration loop.
         """
-        final_results: Dict[str, List[Listing]] = {cat.value: [] for cat in PartCategory}
-        current_queries = self._plan(target)
+        target_build = TargetBuild.from_json(target_build_json)
         
-        iteration = 0
-        while iteration < max_iterations:
-            print(f"--- Agent Iteration {iteration + 1}/{max_iterations} ---")
-            
-            # 1. Search
-            all_raw_listings: List[Listing] = []
-            for query in current_queries:
-                for source in self.sources:
-                    results = await source.search(query)
-                    all_raw_listings.extend(results)
-            
-            # 2. Normalize
-            normalized_listings = []
-            for listing in all_raw_listings:
-                norm_listing = await self.normalizer.normalize(listing)
-                normalized_listings.append(norm_listing)
-            
-            # 3. Score & Filter
-            filtered_listings = await self.compatibility_engine.score_and_filter(
-                normalized_listings, target
-            )
-            
-            # 4. Collect valid matches
-            found_something = False
-            for listing in filtered_listings:
-                if listing.parsed_part:
-                    cat_key = listing.parsed_part.category.value
-                    # Avoid duplicates in the same category
-                    if not any(l.raw_url == listing.raw_url for l in final_results[cat_key]):
-                        final_results[cat_key].append(listing)
-                        found_something = True
+        # 1. Plan
+        queries = self._plan(target_build)
+        
+        all_listings: List[Listing] = []
+        
+        # 2. Search (Fan out)
+        sources = self.registry.get_all_instances()
+        tasks = []
+        for query in queries:
+            for source in sources:
+                tasks.append(self._search_and_normalize(source, query))
+        
+        results = await asyncio.gather(*tasks)
+        
+        # Flatten results
+        for batch in results:
+            all_listings.extend(batch)
 
-            # Check if we have at least one good option for each required category
-            all_requirements_met = all(
-                len(final_results[cat.value]) > 0 
-                for cat in target.required_parts.keys()
-            )
-
-            if all_requirements_met:
-                print("Goal reached: All part categories have candidates.")
-                break
-            
-            # 5. Reflect
-            print("Requirements not fully met. Reflecting...")
-            current_queries = self._reflect(target, final_results, current_queries)
-            iteration += 1
-
+        # 3. Score & Filter (Compatibility check)
+        final_results = []
+        for listing in all_listings:
+            if listing.parsed_part:
+                issues = self.compatibility_engine.check(target_build, listing.parsed_part)
+                
+                # Filter out critical mismatches
+                if not any(i.severity == "critical" for i in issues):
+                    # Add issues to the listing for the UI to show
+                    # (In a real app, we might add an 'issues' field to Listing)
+                    final_results.append(listing)
+        
+        # 4. Sort by price (simple heuristic for now)
+        final_results.sort(key=lambda x: x.current_price)
+        
         return final_results
 
     def _plan(self, target: TargetBuild) -> List[str]:
         """
-        Generates initial queries based on target requirements.
+        Generates initial search queries based on the target build.
         """
         queries = []
-        for category, specs in target.required_parts.items():
-            query_parts = [category.value]
-            for k, v in specs.items():
-                query_parts.append(str(v))
-            queries.append(" ".join(query_parts))
+        for category, part in target.parts.items():
+            # Basic query: "Ryzen 5 5600X"
+            queries.append(part.model_name)
+            # Expansion query: "AM4 CPU"
+            if category == PartCategory.CPU and "socket" in part.specs:
+                queries.append(f"{part.specs['socket']} CPU")
+            elif category == PartCategory.RAM and "ddr_gen" in part.specs:
+                queries.append(f"DDR{part.specs['ddr_gen']} RAM")
+        
+        if not queries:
+            queries = ["pc parts"]
+            
         return queries
 
-    def _reflect(
-        self, 
-        target: TargetBuild, 
-        current_results: Dict[str, List[Listing]], 
-        old_queries: List[str]
-    ) -> List[str]:
-        """
-        Generates new queries if the previous ones failed.
-        """
-        new_queries = []
-        for category, specs in target.required_parts.items():
-            cat_key = category.value
-            if len(current_results.get(cat_key, [])) == 0:
-                # We didn't find anything for this category.
-                # Try a broader query (just the category) or a different spec.
-                new_queries.append(category.value)
-                
-                # If we had specific specs, try removing the most restrictive ones
-                # (In a real agent, this would involve an LLM deciding which spec to drop)
-                if len(specs) > 1:
-                    # Fallback to just the category name
-                    pass 
-            else:
-                # We found something, but maybe we want more variety?
-                # For now, let's stick to what worked or expand slightly.
-                pass
-                
-        # If no progress is being made, return a default "safety" set of queries
-        if not new_queries:
-            return ["pc parts bundle"]
-            
-        return list(set(new_queries))
+    async def _search_and_normalize(self, source, query: str) -> List[Listing]:
+        try:
+            raw_listings = await source.search(query)
+            normalized_listings = []
+            for rl in raw_listings:
+                normalized = await self.normalizer.normalize(rl)
+                normalized_listings.append(normalized)
+            return normalized_listings
+        except Exception as e:
+            print(f"Error in {source.name} for query '{query}': {e}")
+            return []

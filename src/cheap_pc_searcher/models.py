@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
-from typing import Optional, Dict, Any
+from dataclasses import dataclass, field
+from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field, ConfigDict
+from enum import Enum
 
 
 class PartCategory(str, Enum):
@@ -25,6 +26,19 @@ class Condition(str, Enum):
     REFURBISHED = "refurbished"
     FOR_PARTS = "for_parts"
     SURPLUS = "surplus"
+
+
+class Severity(str, Enum):
+    INFO = "info"
+    WARNING = "warning"
+    CRITICAL = "critical"
+
+
+@dataclass
+class CompatibilityIssue:
+    component: str
+    message: str
+    severity: Severity
 
 
 class Part(BaseModel):
