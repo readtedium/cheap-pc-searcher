@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from typing import List
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from cheap_pc_searcher.models import Listing, PartCategory, TargetBuild
@@ -43,6 +44,14 @@ app = FastAPI(
     title="Cheap PC Searcher API",
     description="Search for cheap, compatible PC components across multiple marketplaces.",
     version="0.1.0"
+)
+
+# The web UI is served from its own origin (e.g. :8990); allow it to call the API.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
